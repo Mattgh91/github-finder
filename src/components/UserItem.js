@@ -30,5 +30,4 @@ UserItem.propTypes = {
     link: PropTypes.string.isRequired,
 };
 
-
 export { UserItem };
