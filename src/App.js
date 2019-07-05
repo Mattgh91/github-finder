@@ -1,31 +1,22 @@
-import React, { Component } from 'react';
+import React, {Component, Fragment} from 'react';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import axios from 'axios';
 import { Navbar } from './components/layout/Navbar';
 import { Users } from './components/Users';
+import User from './components/User';
 import Alert from './components/Alert';
 import Search from './components/Search';
+import About from './components/About';
 import Spinner from './components/layout/Spinner';
 import './index.css';
 
 class App extends Component {
     state = {
         users: [],
+        user: {},
         loading: false,
         alert: null,
     };
-
-    // async componentDidMount() {
-    //     const res = await axios.get(
-    //         `https://api.github.com/users?
-    //         client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&
-    //         client_secret=${process.env.REACT_APP_GITHUB_SECRET}`);
-    //
-    //     this.setState({
-    //         users: res.data,
-    //     }, () => {
-    //         this.setState({ loading: false });
-    //     });
-    // }
 
     // Search GitHub Users...
     searchUsers = async text => {
@@ -43,6 +34,7 @@ class App extends Component {
         });
     };
 
+    // Clear GitHub search/users
     clearUsers = () => {
          this.setState({
              users: [],
@@ -50,6 +42,7 @@ class App extends Component {
          });
     };
 
+    // Set alert in case of no entry upon submit
     setAlert = (msg, type) => {
         this.setState({
             alert: {
@@ -61,23 +54,61 @@ class App extends Component {
         })
     };
 
+    // Get single GitHub user details
+    getUser = async username => {
+        this.setState({ loading: true });
+
+        const res = await axios.get(
+            `https://api.github.com/users/${username}?client_id=${
+                process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=${
+                process.env.REACT_APP_GITHUB_SECRET}`
+        );
+
+        this.setState({
+            user: res.data,
+        }, () => {
+            this.setState({ loading: false });
+        });
+    };
+
     render() {
-        const { users, loading, alert } = this.state;
+        const { users, loading, alert, user } = this.state;
         return (
-            <div className="App">
-                <Navbar />
-                <div className="container">
-                    <Alert alert={alert} />
-                    <Search
-                        searchUsers={this.searchUsers}
-                        clearUsers={this.clearUsers}
-                        showClear={users.length > 0}
-                        setAlert={this.setAlert}
-                    />
-                    <Spinner loading={loading} />
-                    <Users users={users} loading={loading} />
+            <Router>
+                <div className="App">
+                    <Navbar />
+                    <div className="container">
+                        <Alert alert={alert} />
+                        <Switch>
+                            <Route exact path='/' render={props => (
+                                <Fragment>
+                                    <Search
+                                        searchUsers={this.searchUsers}
+                                        clearUsers={this.clearUsers}
+                                        showClear={users.length > 0}
+                                        setAlert={this.setAlert}
+                                    />
+                                    <Spinner loading={loading} />
+                                    <Users users={users} loading={loading} />
+                                </Fragment>
+                            )} />
+                            <Route exact path='/about' component={About} />
+                            <Route
+                                exact
+                                path='/user/:login'
+                                render={props => (
+                                    <User
+                                        { ...props}
+                                        user={user}
+                                        getUser={this.getUser}
+                                        loading={loading}
+                                    />
+                                )}
+                            />
+                        </Switch>
+                    </div>
                 </div>
-            </div>
+            </Router>
         );
     }
 }
