@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 const Search = ({clearUsers, showClear, searchUsers, setAlert}) => {
-    const [text, setText] = useState(null);
+    const [text, setText] = useState('');
 
     const onSubmit = e => {
         e.preventDefault();
@@ -51,4 +51,4 @@ Search.propTypes = {
     setAlert: PropTypes.func.isRequired,
 };
 
-export default Search;
+export default React.memo(Search);
