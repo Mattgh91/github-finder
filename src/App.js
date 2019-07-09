@@ -10,6 +10,8 @@ import About from './components/About';
 import Spinner from './components/layout/Spinner';
 import './index.css';
 
+import GithubState from './context/github/GithubState';
+
 const App = () => {
     const [users, setUsers] = useState([]);
     const [user, setUser] = useState({});
@@ -66,43 +68,45 @@ const App = () => {
     };
 
     return (
-        <Router>
-            <div className="App">
-                <Navbar />
-                <div className="container">
-                    <Alert alert={alert} />
-                    <Switch>
-                        <Route exact path='/' render={props => (
-                            <Fragment>
-                                <Search
-                                    searchUsers={searchUsers}
-                                    clearUsers={clearUsers}
-                                    showClear={users.length > 0}
-                                    setAlert={showAlert}
-                                />
-                                <Spinner loading={loading} />
-                                <Users users={users} loading={loading} />
-                            </Fragment>
-                        )} />
-                        <Route exact path='/about' component={About} />
-                        <Route
-                            exact
-                            path='/user/:login'
-                            render={props => (
-                                <User
-                                    { ...props}
-                                    user={user}
-                                    repos={repos}
-                                    getUser={getUser}
-                                    getUserRepos={getUserRepos}
-                                    loading={loading}
-                                />
-                            )}
-                        />
-                    </Switch>
+        <GithubState>
+            <Router>
+                <div className="App">
+                    <Navbar />
+                    <div className="container">
+                        <Alert alert={alert} />
+                        <Switch>
+                            <Route exact path='/' render={props => (
+                                <Fragment>
+                                    <Search
+                                        searchUsers={searchUsers}
+                                        clearUsers={clearUsers}
+                                        showClear={users.length > 0}
+                                        setAlert={showAlert}
+                                    />
+                                    <Spinner loading={loading} />
+                                    <Users users={users} loading={loading} />
+                                </Fragment>
+                            )} />
+                            <Route exact path='/about' component={About} />
+                            <Route
+                                exact
+                                path='/user/:login'
+                                render={props => (
+                                    <User
+                                        { ...props}
+                                        user={user}
+                                        repos={repos}
+                                        getUser={getUser}
+                                        getUserRepos={getUserRepos}
+                                        loading={loading}
+                                    />
+                                )}
+                            />
+                        </Switch>
+                    </div>
                 </div>
-            </div>
-        </Router>
+            </Router>
+        </GithubState>
     );
 };
 
