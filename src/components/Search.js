@@ -16,7 +16,6 @@ const Search = () => {
             setText('');
         }
     };
-
     const onChange = e => setText(e.target.value);
 
     return (
