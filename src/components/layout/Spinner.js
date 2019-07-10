@@ -1,7 +1,10 @@
-import React, { Fragment } from 'react';
+import React, { useContext, Fragment } from 'react';
+import GitHubContext from '../../context/github/githubContext';
 import spinner from './spinner.gif';
 
-const Spinner = ({ loading }) => {
+const Spinner = () => {
+    const gitHubContext = useContext(GitHubContext);
+    const { loading } = gitHubContext;
     if (loading) {
         return (
             <Fragment>
