@@ -1,4 +1,4 @@
-import React, {Fragment, useState} from 'react';
+import React, {Fragment} from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { Navbar } from './components/layout/Navbar';
 import { Users } from './components/Users';
@@ -9,18 +9,12 @@ import About from './components/About';
 import './index.css';
 
 import GithubState from './context/github/GithubState';
+import AlertState from './context/alert/AlertState';
 
 const App = () => {
-    const [alert, setAlert] = useState(null);
-
-    // Set alert in case of no entry upon submit
-    const showAlert = (msg, type) => {
-        setAlert({msg, type});
-        setTimeout(() => setAlert(null), 3500);
-    };
-
     return (
         <GithubState>
+        <AlertState>
             <Router>
                 <div className="App">
                     <Navbar />
@@ -29,7 +23,7 @@ const App = () => {
                         <Switch>
                             <Route exact path='/' render={props => (
                                 <Fragment>
-                                    <Search setAlert={showAlert} />
+                                    <Search />
                                     <Users />
                                 </Fragment>
                             )} />
@@ -47,6 +41,7 @@ const App = () => {
                     </div>
                 </div>
             </Router>
+        </AlertState>
         </GithubState>
     );
 };
